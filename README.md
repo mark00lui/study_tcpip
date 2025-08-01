@@ -3,12 +3,195 @@
 ## 目錄
 - [概述](#概述)
 - [網路基礎架構](#網路基礎架構)
+  - [OSI 七層模型與 TCP/IP 四層模型](#osi-七層模型與-tcpip-四層模型)
+  - [MAC 層 (Media Access Control)](#mac-層-media-access-control)
+    - [MAC 層主要功能](#mac-層主要功能)
+    - [蜂窩網路資料鏈路層架構](#蜂窩網路資料鏈路層架構)
+    - [MAC 層協議類型](#mac-層協議類型)
+    - [MAC 幀結構](#mac-幀結構)
+    - [MAC 層關鍵機制](#mac-層關鍵機制)
+  - [PDCP (Packet Data Convergence Protocol)](#pdcp-packet-data-convergence-protocol)
+    - [PDCP 層功能](#pdcp-層功能)
+    - [PDCP 架構](#pdcp-架構)
+    - [PDCP 封包結構](#pdcp-封包結構)
+    - [PDCP 關鍵機制](#pdcp-關鍵機制)
+  - [RLC (Radio Link Control)](#rlc-radio-link-control)
+    - [RLC 層功能](#rlc-層功能)
+    - [RLC 架構](#rlc-架構)
+    - [RLC 封包結構](#rlc-封包結構)
+    - [RLC 傳輸模式](#rlc-傳輸模式)
+    - [RLC 關鍵機制](#rlc-關鍵機制)
+  - [PPP (Point-to-Point Protocol)](#ppp-point-to-point-protocol)
+    - [PPP 基本概念](#ppp-基本概念)
+    - [PPP 架構](#ppp-架構)
+    - [PPP 封包結構](#ppp-封包結構)
+    - [PPP 配置範例](#ppp-配置範例)
 - [IP 協議詳解](#ip-協議詳解)
+  - [IPv4 協議](#ipv4-協議)
+    - [IPv4 地址結構](#ipv4-地址結構)
+    - [IPv4 地址分類](#ipv4-地址分類)
+    - [IPv4 封包結構](#ipv4-封包結構)
+    - [IPv4 子網路遮罩原理](#ipv4-子網路遮罩原理)
+  - [IPv6 協議](#ipv6-協議)
+    - [IPv6 地址結構](#ipv6-地址結構)
+    - [IPv6 地址類型](#ipv6-地址類型)
+    - [IPv6 在區域網路中的使用](#ipv6-在區域網路中的使用)
+    - [IPv6 與 IPv4 區域網路比較](#ipv6-與-ipv4-區域網路比較)
+    - [IPv6 封包結構](#ipv6-封包結構)
+  - [VLAN (Virtual Local Area Network) 虛擬區域網路](#vlan-virtual-local-area-network-虛擬區域網路)
+    - [VLAN 基本概念](#vlan-基本概念)
+    - [VLAN 類型與配置](#vlan-類型與配置)
+    - [網路管理員如何使用 VLAN](#網路管理員如何使用-vlan)
+    - [不同網路串接成區域網路](#不同網路串接成區域網路)
+    - [VLAN 監控與管理](#vlan-監控與管理)
+    - [VLAN 故障排除](#vlan-故障排除)
+  - [IPv4 與 IPv6 轉換](#ipv4-與-ipv6-轉換)
+    - [雙堆疊 (Dual Stack)](#雙堆疊-dual-stack)
+    - [隧道技術 (Tunneling)](#隧道技術-tunneling)
+    - [轉換技術 (Translation)](#轉換技術-translation)
+  - [Local IP vs Global IP](#local-ip-vs-global-ip)
+    - [Local IP 概念](#local-ip-概念)
+    - [Global IP 概念](#global-ip-概念)
+    - [NAT (Network Address Translation)](#nat-network-address-translation)
 - [傳輸層協議](#傳輸層協議)
+  - [TCP (Transmission Control Protocol)](#tcp-transmission-control-protocol)
+    - [TCP 特性](#tcp-特性)
+    - [TCP 封包結構](#tcp-封包結構)
+    - [TCP 連接狀態機](#tcp-連接狀態機)
+    - [TCP 應用場景](#tcp-應用場景)
+  - [UDP (User Datagram Protocol)](#udp-user-datagram-protocol)
+    - [UDP 特性](#udp-特性)
+    - [UDP 封包結構](#udp-封包結構)
+    - [UDP 應用場景](#udp-應用場景)
 - [應用層協議](#應用層協議)
+  - [MQTT (Message Queuing Telemetry Transport)](#mqtt-message-queuing-telemetry-transport)
+    - [MQTT 特性](#mqtt-特性)
+    - [MQTT 封包類型](#mqtt-封包類型)
+    - [MQTT 應用場景](#mqtt-應用場景)
+  - [WebSocket](#websocket)
+    - [WebSocket 特性](#websocket-特性)
+    - [WebSocket 握手過程](#websocket-握手過程)
+    - [WebSocket 幀格式](#websocket-幀格式)
+    - [WebSocket 應用場景](#websocket-應用場景)
+  - [QUIC (Quick UDP Internet Connections)](#quic-quick-udp-internet-connections)
+    - [QUIC 特性](#quic-特性)
+    - [QUIC 連接建立](#quic-連接建立)
+    - [QUIC 應用場景](#quic-應用場景)
 - [安全協議](#安全協議)
+  - [TLS (Transport Layer Security)](#tls-transport-layer-security)
+    - [TLS 版本](#tls-版本)
+    - [TLS 握手過程](#tls-握手過程)
+    - [TLS 加密套件](#tls-加密套件)
+  - [HTTPS (HTTP Secure)](#https-http-secure)
+    - [HTTPS 特性](#https-特性)
+    - [HTTPS 證書類型](#https-證書類型)
+    - [HTTPS 應用場景](#https-應用場景)
 - [Quectel 模組實作範例](#quectel-模組實作範例)
+  - [MAC 層配置與支援](#mac-層配置與支援)
+    - [網路模式配置](#網路模式配置)
+    - [註冊與功率控制](#註冊與功率控制)
+    - [PPP 連接配置](#ppp-連接配置)
+    - [效能監控與調試](#效能監控與調試)
+    - [進階功能配置](#進階功能配置)
+  - [PDCP 層配置](#pdcp-層配置)
+    - [PDCP 基本配置](#pdcp-基本配置)
+    - [ROHC 壓縮配置](#rohc-壓縮配置)
+    - [加密與完整性保護](#加密與完整性保護)
+    - [PDCP 效能監控](#pdcp-效能監控)
+  - [RLC 層配置](#rlc-層配置)
+    - [RLC 模式配置](#rlc-模式配置)
+    - [視窗大小配置](#視窗大小配置)
+    - [分段與重組配置](#分段與重組配置)
+    - [RLC 效能監控](#rlc-效能監控)
+  - [IP 配置與支援](#ip-配置與支援)
+    - [IPv4 子網路配置](#ipv4-子網路配置)
+    - [IPv6 配置](#ipv6-配置)
+    - [雙堆疊配置](#雙堆疊配置)
+    - [IP 層效能監控](#ip-層效能監控)
+  - [VLAN 配置與支援](#vlan-配置與支援)
+    - [VLAN 基本配置](#vlan-基本配置)
+    - [VLAN 間路由配置](#vlan-間路由配置)
+    - [VLAN 安全配置](#vlan-安全配置)
+    - [VLAN 監控與診斷](#vlan-監控與診斷)
+  - [TCP/UDP 實作](#tcpudp-實作)
+    - [TCP 連接管理](#tcp-連接管理)
+    - [UDP 資料傳輸](#udp-資料傳輸)
+    - [Socket 配置](#socket-配置)
+  - [MQTT 實作](#mqtt-實作)
+    - [MQTT 連接建立](#mqtt-連接建立)
+    - [MQTT 訊息發布與訂閱](#mqtt-訊息發布與訂閱)
+    - [MQTT QoS 配置](#mqtt-qos-配置)
+  - [HTTPS/WebSocket 實作](#httpswebsocket-實作)
+    - [HTTPS 連接建立](#https-連接建立)
+    - [WebSocket 連接建立](#websocket-連接建立)
+    - [SSL/TLS 配置](#ssltls-配置)
+  - [電源管理](#電源管理)
+    - [PSM (Power Saving Mode)](#psm-power-saving-mode)
+    - [eDRX (Extended Discontinuous Reception)](#edrx-extended-discontinuous-reception)
+    - [省電模式配置](#省電模式配置)
+- [效能優化](#效能優化)
+  - [MAC 層效能優化](#mac-層效能優化)
+    - [傳輸功率優化](#傳輸功率優化)
+    - [通道選擇優化](#通道選擇優化)
+    - [MIMO 配置優化](#mimo-配置優化)
+    - [QoS 配置優化](#qos-配置優化)
+  - [PDCP 層優化](#pdcp-層優化)
+    - [ROHC 壓縮優化](#rohc-壓縮優化)
+    - [加密算法優化](#加密算法優化)
+    - [序列號管理優化](#序列號管理優化)
+  - [RLC 層優化](#rlc-層優化)
+    - [視窗大小優化](#視窗大小優化)
+    - [模式選擇優化](#模式選擇優化)
+    - [重傳機制優化](#重傳機制優化)
+  - [IP 層效能優化](#ip-層效能優化)
+    - [IPv4 子網路優化](#ipv4-子網路優化)
+    - [IPv6 配置優化](#ipv6-配置優化)
+    - [雙堆疊效能優化](#雙堆疊效能優化)
+    - [IP 層監控與調優](#ip-層監控與調優)
+  - [VLAN 效能優化](#vlan-效能優化)
+    - [VLAN 配置優化](#vlan-配置優化)
+    - [VLAN 間路由優化](#vlan-間路由優化)
+    - [VLAN 安全優化](#vlan-安全優化)
+    - [VLAN 監控優化](#vlan-監控優化)
 - [常見問題與故障排除](#常見問題與故障排除)
+  - [MAC 層問題](#mac-層問題)
+    - [網路註冊失敗](#網路註冊失敗)
+    - [傳輸錯誤](#傳輸錯誤)
+    - [PPP 連接失敗](#ppp-連接失敗)
+  - [PDCP 層問題](#pdcp-層問題)
+    - [壓縮失敗](#壓縮失敗)
+    - [加密錯誤](#加密錯誤)
+    - [序列號錯誤](#序列號錯誤)
+  - [RLC 層問題](#rlc-層問題)
+    - [重傳失敗](#重傳失敗)
+    - [分段錯誤](#分段錯誤)
+    - [視窗溢出](#視窗溢出)
+  - [IPv4 子網路配置問題](#ipv4-子網路配置問題)
+    - [子網路遮罩配置錯誤](#子網路遮罩配置錯誤)
+    - [廣播域問題](#廣播域問題)
+    - [靜態 IP 衝突](#靜態-ip-衝突)
+  - [IPv6 配置問題](#ipv6-配置問題)
+    - [自動配置失敗](#自動配置失敗)
+    - [前綴錯誤](#前綴錯誤)
+    - [雙堆疊問題](#雙堆疊問題)
+    - [Link-Local 地址問題](#link-local-地址問題)
+  - [VLAN 配置問題](#vlan-配置問題)
+    - [VLAN 間無法通訊](#vlan-間無法通訊)
+    - [VLAN 標籤問題](#vlan-標籤問題)
+    - [VLAN 安全策略問題](#vlan-安全策略問題)
+  - [TCP/UDP 問題](#tcpudp-問題)
+    - [TCP 連接失敗](#tcp-連接失敗)
+    - [UDP 資料丟失](#udp-資料丟失)
+    - [Socket 配置錯誤](#socket-配置錯誤)
+  - [MQTT 問題](#mqtt-問題)
+    - [MQTT 連接失敗](#mqtt-連接失敗)
+    - [訊息發布失敗](#訊息發布失敗)
+    - [QoS 配置錯誤](#qos-配置錯誤)
+  - [HTTPS/WebSocket 問題](#httpswebsocket-問題)
+    - [SSL/TLS 握手失敗](#ssltls-握手失敗)
+    - [證書驗證錯誤](#證書驗證錯誤)
+    - [WebSocket 升級失敗](#websocket-升級失敗)
+- [總結](#總結)
 
 ## 概述
 
@@ -631,6 +814,347 @@ ipv6calc --in ipv6addr --out ipv6addr 2001:db8:1234:5678::1
 | 安全性 | 外掛 | 內建 |
 | 多播 | 支援 | 增強支援 |
 
+#### VLAN (Virtual Local Area Network) 虛擬區域網路
+
+VLAN 是一種網路虛擬化技術，允許網路管理員在單一實體網路基礎設施上創建多個邏輯網路。
+
+##### VLAN 基本概念
+
+###### 1. VLAN 定義與目的
+```
+VLAN 是一種邏輯網路分段技術，允許將單一實體網路分割為多個虛擬網路。
+
+目的:
+- 網路分段與隔離
+- 廣播域控制
+- 安全性提升
+- 網路管理簡化
+- 頻寬優化
+```
+
+###### 2. VLAN 標籤 (Tag) 結構
+```
+IEEE 802.1Q VLAN 標籤格式:
+┌─────────────────────────────────────────────────────────────┐
+│ 目的 MAC (6 bytes) │ 來源 MAC (6 bytes) │ 類型 (2 bytes) │
+├─────────────────────────────────────────────────────────────┤
+│ VLAN 標籤 (4 bytes)                                        │
+│ ├── TPID (2 bytes): 0x8100                                │
+│ ├── TCI (2 bytes)                                         │
+│ │   ├── Priority (3 bits): 優先級                         │
+│ │   ├── CFI (1 bit): 規範格式指示器                       │
+│ │   └── VID (12 bits): VLAN ID (1-4094)                   │
+│ └───────────────────────────────────────────────────────────┘
+│ 資料 (46-1500 bytes)                                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+##### VLAN 類型與配置
+
+###### 1. VLAN 類型
+```
+基於端口的 VLAN (Port-based VLAN):
+- 根據交換機端口分配 VLAN
+- 簡單易配置
+- 適合固定設備
+
+基於 MAC 地址的 VLAN (MAC-based VLAN):
+- 根據設備 MAC 地址分配 VLAN
+- 設備移動時 VLAN 跟隨
+- 適合移動設備
+
+基於協議的 VLAN (Protocol-based VLAN):
+- 根據網路協議分配 VLAN
+- 支援多協議環境
+- 適合混合網路
+
+基於子網路的 VLAN (Subnet-based VLAN):
+- 根據 IP 子網路分配 VLAN
+- 與 IP 規劃結合
+- 適合大型網路
+```
+
+###### 2. VLAN 配置範例
+```
+企業 VLAN 規劃:
+┌─────────────────────────────────────────────────────────────┐
+│ VLAN 10: 管理網路 (Management)                             │
+│ - 範圍: 192.168.10.0/24                                   │
+│ - 設備: 網路設備、伺服器管理介面                           │
+│ - 安全等級: 高                                             │
+├─────────────────────────────────────────────────────────────┤
+│ VLAN 20: 生產網路 (Production)                             │
+│ - 範圍: 192.168.20.0/24                                   │
+│ - 設備: 生產設備、工業控制系統                             │
+│ - 安全等級: 中                                             │
+├─────────────────────────────────────────────────────────────┤
+│ VLAN 30: 辦公網路 (Office)                                 │
+│ - 範圍: 192.168.30.0/24                                   │
+│ - 設備: 辦公電腦、印表機                                   │
+│ - 安全等級: 中                                             │
+├─────────────────────────────────────────────────────────────┤
+│ VLAN 40: 訪客網路 (Guest)                                  │
+│ - 範圍: 192.168.40.0/24                                   │
+│ - 設備: 訪客設備、IoT 設備                                 │
+│ - 安全等級: 低                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+##### 網路管理員如何使用 VLAN
+
+###### 1. VLAN 規劃策略
+
+**業務導向規劃**
+```
+根據業務需求劃分 VLAN:
+- 部門 VLAN: 按組織架構劃分
+- 功能 VLAN: 按功能需求劃分
+- 安全 VLAN: 按安全等級劃分
+- 服務 VLAN: 按服務類型劃分
+```
+
+**網路效能規劃**
+```
+VLAN 大小考量:
+- 小型 VLAN (≤ 100 設備): 高效能，低延遲
+- 中型 VLAN (100-500 設備): 平衡效能與管理
+- 大型 VLAN (> 500 設備): 需要進一步分段
+```
+
+###### 2. VLAN 配置步驟
+
+**步驟 1: VLAN 設計**
+```
+1. 識別業務需求
+2. 分析網路流量模式
+3. 確定 VLAN 數量與範圍
+4. 規劃 VLAN 間路由策略
+5. 設計安全策略
+```
+
+**步驟 2: 交換機配置**
+```
+Cisco 交換機 VLAN 配置範例:
+Switch# configure terminal
+Switch(config)# vlan 10
+Switch(config-vlan)# name Management
+Switch(config-vlan)# exit
+
+Switch(config)# interface fastethernet 0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# exit
+```
+
+**步驟 3: 路由配置**
+```
+VLAN 間路由配置:
+Router# configure terminal
+Router(config)# interface vlan 10
+Router(config-if)# ip address 192.168.10.1 255.255.255.0
+Router(config-if)# exit
+
+Router(config)# interface vlan 20
+Router(config-if)# ip address 192.168.20.1 255.255.255.0
+Router(config-if)# exit
+```
+
+###### 3. VLAN 間通訊控制
+
+**ACL (Access Control List) 配置**
+```
+允許管理網路存取生產網路:
+Router(config)# access-list 100 permit ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+Router(config)# interface vlan 10
+Router(config-if)# ip access-group 100 out
+```
+
+**防火牆規則**
+```
+VLAN 間防火牆配置:
+- VLAN 10 → VLAN 20: 允許特定服務
+- VLAN 20 → VLAN 10: 拒絕所有流量
+- VLAN 30 → VLAN 40: 允許 HTTP/HTTPS
+- VLAN 40 → VLAN 30: 拒絕所有流量
+```
+
+##### 不同網路串接成區域網路
+
+###### 1. VLAN Trunk 技術
+
+**Trunk 概念**
+```
+Trunk 是承載多個 VLAN 的鏈路，使用 802.1Q 標籤區分不同 VLAN。
+
+Trunk 配置範例:
+Switch(config)# interface gigabitethernet 0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# switchport trunk allowed vlan 10,20,30,40
+Switch(config-if)# switchport trunk native vlan 1
+```
+
+**Trunk 協議**
+```
+ISL (Inter-Switch Link):
+- Cisco 專有協議
+- 30 字節標籤
+- 支援 1000 個 VLAN
+
+802.1Q:
+- IEEE 標準協議
+- 4 字節標籤
+- 支援 4094 個 VLAN
+- 廣泛支援
+```
+
+###### 2. 多站點 VLAN 連接
+
+**Layer 2 延伸**
+```
+使用 Metro Ethernet 或 MPLS 延伸 VLAN:
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│ 總部            │  │ 骨幹網路        │  │ 分支            │
+│ VLAN 10,20,30   │──│ MPLS/ Metro-E   │──│ VLAN 10,20,30   │
+│ 192.168.x.0/24  │  │                 │  │ 192.168.x.0/24  │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+```
+
+**Layer 3 連接**
+```
+使用路由連接不同站點:
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│ 總部            │  │ 骨幹網路        │  │ 分支            │
+│ 10.1.x.0/24     │──│ IP/MPLS         │──│ 10.2.x.0/24     │
+│ VLAN 10,20,30   │  │                 │  │ VLAN 10,20,30   │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+```
+
+###### 3. 虛擬化環境 VLAN
+
+**VMware VLAN 配置**
+```
+vSphere 虛擬交換機 VLAN 配置:
+1. 建立虛擬交換機
+2. 配置 VLAN ID
+3. 分配虛擬機器到 VLAN
+4. 配置上行鏈路到實體交換機
+```
+
+**容器網路 VLAN**
+```
+Docker/Kubernetes VLAN 配置:
+- 使用 CNI 插件支援 VLAN
+- 配置網路策略
+- 實現容器間隔離
+```
+
+##### VLAN 監控與管理
+
+###### 1. VLAN 監控工具
+
+**SNMP 監控**
+```
+VLAN 統計監控:
+- VLAN 流量統計
+- 廣播風暴檢測
+- 錯誤率監控
+- 效能指標收集
+```
+
+**網路分析工具**
+```
+Wireshark VLAN 分析:
+- 過濾特定 VLAN 流量
+- 分析 VLAN 標籤
+- 監控 VLAN 間通訊
+- 故障排除
+```
+
+###### 2. VLAN 管理最佳實踐
+
+**文檔管理**
+```
+VLAN 文檔應包含:
+- VLAN ID 與名稱對應
+- IP 地址範圍
+- 設備清單
+- 安全策略
+- 變更記錄
+```
+
+**變更管理**
+```
+VLAN 變更流程:
+1. 變更申請與審核
+2. 影響分析
+3. 備份配置
+4. 實施變更
+5. 驗證測試
+6. 文檔更新
+```
+
+##### VLAN 故障排除
+
+###### 1. 常見 VLAN 問題
+
+**VLAN 間無法通訊**
+```
+症狀: 不同 VLAN 的設備無法互相通訊
+原因:
+- 路由配置錯誤
+- ACL 阻擋
+- 防火牆規則
+- VLAN 配置錯誤
+
+解決方案:
+1. 檢查路由表
+2. 驗證 ACL 配置
+3. 檢查防火牆規則
+4. 確認 VLAN 配置
+```
+
+**Trunk 鏈路問題**
+```
+症狀: VLAN 無法跨越交換機
+原因:
+- Trunk 配置錯誤
+- VLAN 未允許通過
+- 標籤協議不匹配
+
+解決方案:
+1. 檢查 Trunk 配置
+2. 確認允許的 VLAN
+3. 驗證標籤協議
+4. 檢查物理連接
+```
+
+###### 2. VLAN 診斷命令
+
+**Cisco 診斷命令**
+```
+# 檢查 VLAN 配置
+show vlan brief
+
+# 檢查 Trunk 配置
+show interfaces trunk
+
+# 檢查 VLAN 間路由
+show ip route
+
+# 檢查 ACL 配置
+show access-lists
+```
+
+**故障排除流程**
+```
+1. 確認 VLAN 配置
+2. 檢查 Trunk 狀態
+3. 驗證路由配置
+4. 測試連通性
+5. 檢查安全策略
+6. 分析流量模式
+```
+
 #### IPv6 封包結構
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1024,6 +1548,87 @@ AT+QISTATS
 
 // 檢查網路連接統計
 AT+QNWINFO
+```
+
+### VLAN 配置與支援
+
+#### Quectel 模組 VLAN 支援
+
+Quectel 模組支援 VLAN 配置，允許在單一實體連接上建立多個邏輯網路。
+
+##### 1. VLAN 基本配置
+```at
+// 檢查模組 VLAN 支援
+AT+QVLAN?
+
+// 配置 VLAN ID
+AT+QVLAN=1,10
+
+// 配置多個 VLAN
+AT+QVLAN=1,10
+AT+QVLAN=2,20
+AT+QVLAN=3,30
+
+// 檢查 VLAN 配置狀態
+AT+QVLAN?
+```
+
+##### 2. VLAN 標籤配置
+```at
+// 配置 802.1Q VLAN 標籤
+AT+QVLAN=1,10,1  // VLAN ID 10, 啟用標籤
+
+// 配置 VLAN 優先級
+AT+QVLAN=1,10,1,5  // VLAN ID 10, 標籤啟用, 優先級 5
+
+// 配置原生 VLAN
+AT+QVLAN=1,1,0  // 原生 VLAN 1, 無標籤
+
+// 檢查 VLAN 標籤狀態
+AT+QVLAN?
+```
+
+##### 3. VLAN 間路由配置
+```at
+// 配置 VLAN 間路由
+AT+QROUTE=1,"192.168.10.0","255.255.255.0","192.168.1.1",10
+
+// 配置 VLAN 預設路由
+AT+QROUTE=1,"0.0.0.0","0.0.0.0","192.168.1.1",10
+
+// 檢查 VLAN 路由表
+AT+QROUTE?
+
+// 刪除 VLAN 路由
+AT+QROUTE=0,"192.168.10.0","255.255.255.0",10
+```
+
+##### 4. VLAN 安全配置
+```at
+// 配置 VLAN ACL
+AT+QACL=1,10,"permit","192.168.10.0","255.255.255.0","192.168.20.0","255.255.255.0"
+
+// 配置 VLAN 防火牆規則
+AT+QFIREWALL=1,10,"allow","tcp","80,443"
+
+// 檢查 VLAN 安全配置
+AT+QACL?
+AT+QFIREWALL?
+```
+
+##### 5. VLAN 監控與診斷
+```at
+// 檢查 VLAN 統計
+AT+QVLANSTAT=10
+
+// 檢查 VLAN 流量
+AT+QVLANFLOW=10
+
+// 檢查 VLAN 錯誤
+AT+QVLANERR=10
+
+// VLAN 連通性測試
+AT+QPING="192.168.10.100",10
 ```
 
 ###### 錯誤率監控
@@ -1726,6 +2331,45 @@ AT+QWSCLOSE=0
 3. 檢查鄰居發現狀態
 4. 使用全域地址替代
 
+#### VLAN 配置問題
+
+##### VLAN 間無法通訊
+**症狀**: 不同 VLAN 的設備無法互相通訊
+**原因**:
+- VLAN 配置錯誤
+- 路由配置不當
+- ACL 阻擋
+- 防火牆規則限制
+**解決方案**:
+1. 檢查 VLAN 配置: `AT+QVLAN?`
+2. 驗證路由配置: `AT+QROUTE?`
+3. 檢查 ACL 設定: `AT+QACL?`
+4. 確認防火牆規則: `AT+QFIREWALL?`
+
+##### VLAN 標籤問題
+**症狀**: VLAN 標籤無法正確處理
+**原因**:
+- 802.1Q 標籤配置錯誤
+- 優先級設定不當
+- 原生 VLAN 配置錯誤
+**解決方案**:
+1. 檢查 VLAN 標籤配置: `AT+QVLAN?`
+2. 重新配置標籤: `AT+QVLAN=1,10,1`
+3. 調整優先級設定
+4. 確認原生 VLAN 配置
+
+##### VLAN 安全策略問題
+**症狀**: VLAN 間通訊被意外阻擋
+**原因**:
+- ACL 規則過於嚴格
+- 防火牆配置錯誤
+- 安全策略衝突
+**解決方案**:
+1. 檢查 ACL 配置: `AT+QACL?`
+2. 驗證防火牆規則: `AT+QFIREWALL?`
+3. 調整安全策略
+4. 測試 VLAN 間連通性: `AT+QPING="192.168.10.100",10`
+
 ### 協議層問題
 
 #### TCP 連接失敗
@@ -1944,6 +2588,57 @@ AT+QERROR?
 
 // 監控延遲
 AT+QPING="8.8.8.8"
+```
+
+#### VLAN 效能優化
+
+##### VLAN 配置優化
+```at
+// 根據業務需求配置 VLAN 大小
+// 小型 VLAN (≤ 100 設備): 高效能
+AT+QVLAN=1,10,1,5  // VLAN 10, 標籤啟用, 優先級 5
+
+// 中型 VLAN (100-500 設備): 平衡效能
+AT+QVLAN=2,20,1,3  // VLAN 20, 標籤啟用, 優先級 3
+
+// 大型 VLAN (> 500 設備): 需要分段
+AT+QVLAN=3,30,1,1  // VLAN 30, 標籤啟用, 優先級 1
+```
+
+##### VLAN 間路由優化
+```at
+// 配置靜態路由減少路由查詢
+AT+QROUTE=1,"192.168.10.0","255.255.255.0","192.168.1.1",10
+
+// 配置 VLAN 預設路由
+AT+QROUTE=1,"0.0.0.0","0.0.0.0","192.168.1.1",10
+
+// 檢查 VLAN 路由效率
+AT+QROUTE?
+```
+
+##### VLAN 安全優化
+```at
+// 配置最小權限原則的 ACL
+AT+QACL=1,10,"permit","192.168.10.0","255.255.255.0","192.168.20.0","255.255.255.0"
+
+// 配置防火牆規則
+AT+QFIREWALL=1,10,"allow","tcp","80,443"
+
+// 監控 VLAN 安全事件
+AT+QVLANSTAT=10
+```
+
+##### VLAN 監控優化
+```at
+// 監控 VLAN 流量
+AT+QVLANFLOW=10
+
+// 監控 VLAN 錯誤
+AT+QVLANERR=10
+
+// VLAN 效能測試
+AT+QPING="192.168.10.100",10
 ```
 
 ###### 動態調優
