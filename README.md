@@ -45,6 +45,13 @@
     - [不同網路串接成區域網路](#不同網路串接成區域網路)
     - [VLAN 監控與管理](#vlan-監控與管理)
     - [VLAN 故障排除](#vlan-故障排除)
+  - [網路層控制協議](#網路層控制協議)
+    - [ICMP (Internet Control Message Protocol)](#icmp-internet-control-message-protocol)
+    - [IGMP (Internet Group Management Protocol)](#igmp-internet-group-management-protocol)
+  - [路由協議](#路由協議)
+    - [OSPF (Open Shortest Path First)](#ospf-open-shortest-path-first)
+    - [BGP (Border Gateway Protocol)](#bgp-border-gateway-protocol)
+    - [RIP (Routing Information Protocol)](#rip-routing-information-protocol)
   - [IPv4 與 IPv6 轉換](#ipv4-與-ipv6-轉換)
     - [雙堆疊 (Dual Stack)](#雙堆疊-dual-stack)
     - [隧道技術 (Tunneling)](#隧道技術-tunneling)
@@ -63,6 +70,14 @@
     - [UDP 特性](#udp-特性)
     - [UDP 封包結構](#udp-封包結構)
     - [UDP 應用場景](#udp-應用場景)
+  - [SCTP (Stream Control Transmission Protocol)](#sctp-stream-control-transmission-protocol)
+    - [SCTP 特性](#sctp-特性)
+    - [SCTP 封包結構](#sctp-封包結構)
+    - [SCTP 應用場景](#sctp-應用場景)
+  - [DCCP (Datagram Congestion Control Protocol)](#dccp-datagram-congestion-control-protocol)
+    - [DCCP 特性](#dccp-特性)
+    - [DCCP 封包結構](#dccp-封包結構)
+    - [DCCP 應用場景](#dccp-應用場景)
 - [應用層協議](#應用層協議)
   - [MQTT (Message Queuing Telemetry Transport)](#mqtt-message-queuing-telemetry-transport)
     - [MQTT 特性](#mqtt-特性)
@@ -77,6 +92,15 @@
     - [QUIC 特性](#quic-特性)
     - [QUIC 連接建立](#quic-連接建立)
     - [QUIC 應用場景](#quic-應用場景)
+  - [網路服務協議](#網路服務協議)
+    - [DNS (Domain Name System)](#dns-domain-name-system)
+    - [DHCP (Dynamic Host Configuration Protocol)](#dhcp-dynamic-host-configuration-protocol)
+    - [SNMP (Simple Network Management Protocol)](#snmp-simple-network-management-protocol)
+  - [物聯網協議](#物聯網協議)
+    - [LwM2M (Lightweight M2M)](#lwm2m-lightweight-m2m)
+  - [新興傳輸協議](#新興傳輸協議)
+    - [MASQUE (Multiplexed Application Substrate over QUIC Encryption)](#masque-multiplexed-application-substrate-over-quic-encryption)
+    - [WebTransport](#webtransport)
 - [安全協議](#安全協議)
   - [TLS (Transport Layer Security)](#tls-transport-layer-security)
     - [TLS 版本](#tls-版本)
@@ -86,6 +110,15 @@
     - [HTTPS 特性](#https-特性)
     - [HTTPS 證書類型](#https-證書類型)
     - [HTTPS 應用場景](#https-應用場景)
+  - [網路層安全協議](#網路層安全協議)
+    - [IPSec (Internet Protocol Security)](#ipsec-internet-protocol-security)
+  - [VPN 協議](#vpn-協議)
+    - [OpenVPN](#openvpn)
+  - [進階加密技術](#進階加密技術)
+    - [後量子密碼學 (Post-Quantum Cryptography)](#後量子密碼學-post-quantum-cryptography)
+    - [零知識證明 (Zero-Knowledge Proofs)](#零知識證明-zero-knowledge-proofs)
+    - [同態加密 (Homomorphic Encryption)](#同態加密-homomorphic-encryption)
+    - [區塊鏈安全協議](#區塊鏈安全協議)
 - [Quectel 模組實作範例](#quectel-模組實作範例)
   - [MAC 層配置與支援](#mac-層配置與支援)
     - [網路模式配置](#網路模式配置)
@@ -1172,6 +1205,187 @@ show access-lists
 └─────────────────────────────────────────────────────────────┘
 ```
 
+### 網路層控制協議
+
+#### ICMP (Internet Control Message Protocol)
+
+ICMP 是網路層的控制協議，用於傳輸錯誤訊息和診斷資訊。
+
+##### ICMP 主要功能
+- **錯誤報告**: 向來源主機報告傳輸錯誤
+- **診斷工具**: 提供網路診斷功能
+- **路由控制**: 協助路由器和主機進行路由決策
+
+##### ICMP 訊息類型
+| 類型 | 代碼 | 描述 | 用途 |
+|------|------|------|------|
+| 0 | 0 | Echo Reply | Ping 回應 |
+| 3 | 0-15 | Destination Unreachable | 目標不可達 |
+| 5 | 0-3 | Redirect | 路由重定向 |
+| 8 | 0 | Echo Request | Ping 請求 |
+| 11 | 0-1 | Time Exceeded | 時間超時 |
+| 12 | 0-1 | Parameter Problem | 參數問題 |
+
+##### ICMP 封包結構
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 類型 │ 代碼 │ 校驗和                                     │
+├─────────────────────────────────────────────────────────────┤
+│ 識別碼 │ 序列號                                           │
+├─────────────────────────────────────────────────────────────┤
+│ 資料 (可變長度)                                            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+##### ICMP 應用場景
+- **Ping**: 測試網路連通性
+- **Traceroute**: 追蹤路由路徑
+- **Path MTU Discovery**: 發現路徑 MTU
+- **錯誤診斷**: 網路故障排除
+
+#### IGMP (Internet Group Management Protocol)
+
+IGMP 用於管理 IP 多播群組成員資格。
+
+##### IGMP 主要功能
+- **群組管理**: 管理多播群組成員資格
+- **群組查詢**: 路由器查詢群組成員
+- **群組報告**: 主機報告群組成員資格
+- **群組離開**: 主機離開多播群組
+
+##### IGMP 版本比較
+| 特性 | IGMPv1 | IGMPv2 | IGMPv3 |
+|------|--------|--------|--------|
+| 群組離開 | 無 | 支援 | 支援 |
+| 群組特定查詢 | 無 | 支援 | 支援 |
+| 來源特定多播 | 無 | 無 | 支援 |
+| 最大回應時間 | 固定 | 可變 | 可變 |
+
+##### IGMP 封包結構
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 版本 │ 類型 │ 最大回應時間 │ 校驗和                         │
+├─────────────────────────────────────────────────────────────┤
+│ 群組地址                                                    │
+├─────────────────────────────────────────────────────────────┤
+│ 來源地址列表 (IGMPv3)                                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 路由協議
+
+#### OSPF (Open Shortest Path First)
+
+OSPF 是一種鏈路狀態路由協議，廣泛用於企業網路。
+
+##### OSPF 特性
+- **鏈路狀態**: 基於鏈路狀態資訊計算最短路徑
+- **分層設計**: 支援區域分割，減少路由表大小
+- **快速收斂**: 網路變化時快速重新計算路由
+- **無環路**: 使用 SPF 算法避免路由環路
+
+##### OSPF 區域類型
+```
+骨幹區域 (Backbone Area 0)
+    ↓
+標準區域 (Standard Areas)
+    ↓
+存根區域 (Stub Areas)
+    ↓
+完全存根區域 (Totally Stubby Areas)
+```
+
+##### OSPF 封包類型
+| 類型 | 名稱 | 用途 |
+|------|------|------|
+| 1 | Hello | 建立鄰居關係 |
+| 2 | Database Description | 資料庫描述 |
+| 3 | Link State Request | 鏈路狀態請求 |
+| 4 | Link State Update | 鏈路狀態更新 |
+| 5 | Link State Acknowledgment | 鏈路狀態確認 |
+
+##### OSPF 配置範例
+```cisco
+Router# configure terminal
+Router(config)# router ospf 1
+Router(config-router)# network 192.168.1.0 0.0.0.255 area 0
+Router(config-router)# network 192.168.2.0 0.0.0.255 area 1
+Router(config-router)# area 1 stub
+```
+
+#### BGP (Border Gateway Protocol)
+
+BGP 是網際網路的核心路由協議，用於自治系統間的路由交換。
+
+##### BGP 特性
+- **路徑向量**: 記錄完整路由路徑
+- **策略路由**: 支援複雜的路由策略
+- **穩定性**: 設計用於大型網路環境
+- **可擴展性**: 支援數十萬條路由
+
+##### BGP 會話類型
+- **eBGP (External BGP)**: 不同自治系統間
+- **iBGP (Internal BGP)**: 同一自治系統內
+
+##### BGP 屬性
+| 屬性 | 類型 | 描述 |
+|------|------|------|
+| Origin | Well-known mandatory | 路由來源 |
+| AS_PATH | Well-known mandatory | AS 路徑 |
+| NEXT_HOP | Well-known mandatory | 下一跳 |
+| LOCAL_PREF | Well-known discretionary | 本地優先級 |
+| MED | Optional non-transitive | 多出口鑑別器 |
+
+##### BGP 配置範例
+```cisco
+Router# configure terminal
+Router(config)# router bgp 65001
+Router(config-router)# neighbor 192.168.1.2 remote-as 65002
+Router(config-router)# network 10.0.0.0 mask 255.255.255.0
+Router(config-router)# neighbor 192.168.1.2 route-map SET_LOCAL_PREF in
+```
+
+#### RIP (Routing Information Protocol)
+
+RIP 是一種距離向量路由協議，簡單易用但功能有限。
+
+##### RIP 特性
+- **距離向量**: 基於跳數計算最佳路徑
+- **簡單易用**: 配置簡單，適合小型網路
+- **跳數限制**: 最大 15 跳
+- **定期更新**: 每 30 秒發送路由更新
+
+##### RIP 版本比較
+| 特性 | RIPv1 | RIPv2 | RIPng |
+|------|-------|-------|-------|
+| 子網路遮罩 | 不支援 | 支援 | 支援 |
+| 認證 | 不支援 | 支援 | 支援 |
+| 多播 | 不支援 | 支援 | 支援 |
+| IPv6 | 不支援 | 不支援 | 支援 |
+
+##### RIP 封包結構
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 命令 │ 版本 │ 保留 │ 路由條目 1                          │
+├─────────────────────────────────────────────────────────────┤
+│ 地址族 │ 路由標籤 │ 網路地址                              │
+├─────────────────────────────────────────────────────────────┤
+│ 子網路遮罩 │ 下一跳 │ 度量值                              │
+├─────────────────────────────────────────────────────────────┤
+│ 路由條目 2...                                               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+##### RIP 配置範例
+```cisco
+Router# configure terminal
+Router(config)# router rip
+Router(config-router)# version 2
+Router(config-router)# network 192.168.1.0
+Router(config-router)# network 192.168.2.0
+Router(config-router)# no auto-summary
+```
+
 ### IPv4 與 IPv6 的轉換
 
 #### 雙棧技術 (Dual Stack)
@@ -1287,6 +1501,105 @@ SYN_RCVD → ESTABLISHED → FIN_WAIT_1 → FIN_WAIT_2 → TIME_WAIT → CLOSED
 - **DNS**: 網域名稱解析
 - **DHCP**: 動態主機配置
 
+### SCTP (Stream Control Transmission Protocol)
+
+#### SCTP 特性
+- **多流傳輸**: 單一連接支援多個資料流
+- **部分可靠傳輸**: 可選擇性重傳
+- **多宿主支援**: 支援多個網路介面
+- **訊息導向**: 保持訊息邊界
+- **無序傳輸**: 支援無序資料傳輸
+
+#### SCTP 封包結構
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 來源埠 │ 目標埠                                             │
+├─────────────────────────────────────────────────────────────┤
+│ 驗證標籤 (Verification Tag)                                 │
+├─────────────────────────────────────────────────────────────┤
+│ 校驗和                                                       │
+├─────────────────────────────────────────────────────────────┤
+│ 塊類型 │ 塊標誌 │ 塊長度                                   │
+├─────────────────────────────────────────────────────────────┤
+│ 塊資料 (可變長度)                                           │
+├─────────────────────────────────────────────────────────────┤
+│ 其他塊...                                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### SCTP 塊類型
+| 類型 | 值 | 描述 |
+|------|----|------|
+| DATA | 0 | 資料塊 |
+| INIT | 1 | 初始化塊 |
+| INIT_ACK | 2 | 初始化確認塊 |
+| SACK | 3 | 選擇性確認塊 |
+| HEARTBEAT | 4 | 心跳塊 |
+| HEARTBEAT_ACK | 5 | 心跳確認塊 |
+| ABORT | 6 | 中止塊 |
+| SHUTDOWN | 7 | 關閉塊 |
+| SHUTDOWN_ACK | 8 | 關閉確認塊 |
+| ERROR | 9 | 錯誤塊 |
+| COOKIE_ECHO | 10 | Cookie 回應塊 |
+| COOKIE_ACK | 11 | Cookie 確認塊 |
+
+#### SCTP 應用場景
+- **SIGTRAN**: 信令傳輸協議
+- **WebRTC**: 即時通訊
+- **VoIP**: 語音通訊
+- **視訊會議**: 多媒體通訊
+- **金融交易**: 高可靠性通訊
+
+### DCCP (Datagram Congestion Control Protocol)
+
+#### DCCP 特性
+- **擁塞控制**: 內建擁塞控制機制
+- **不可靠傳輸**: 不保證資料傳遞
+- **連接導向**: 需要建立連接
+- **半雙工**: 單向資料傳輸
+- **服務碼**: 支援不同服務類型
+
+#### DCCP 封包結構
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 來源埠 │ 目標埠                                             │
+├─────────────────────────────────────────────────────────────┤
+│ 資料偏移 │ CCVal │ CsCov │ 保留 │ 類型 │ 保留 │ 序列號     │
+├─────────────────────────────────────────────────────────────┤
+│ 服務碼 (Service Code)                                       │
+├─────────────────────────────────────────────────────────────┤
+│ 選項 (可選)                                                 │
+├─────────────────────────────────────────────────────────────┤
+│ 資料 (可選)                                                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### DCCP 封包類型
+| 類型 | 值 | 描述 |
+|------|----|------|
+| DCCP-Request | 0 | 連接請求 |
+| DCCP-Response | 1 | 連接回應 |
+| DCCP-Data | 2 | 資料封包 |
+| DCCP-Ack | 3 | 確認封包 |
+| DCCP-DataAck | 4 | 資料確認封包 |
+| DCCP-CloseReq | 5 | 關閉請求 |
+| DCCP-Close | 6 | 關閉封包 |
+| DCCP-Reset | 7 | 重置封包 |
+| DCCP-Sync | 8 | 同步封包 |
+| DCCP-SyncAck | 9 | 同步確認封包 |
+
+#### DCCP 擁塞控制
+- **CCID 2**: TCP-like 擁塞控制
+- **CCID 3**: TFRC (TCP-Friendly Rate Control)
+- **CCID 4**: TFRC-SP (Small Packets)
+
+#### DCCP 應用場景
+- **串流媒體**: 音訊、視訊串流
+- **線上遊戲**: 即時遊戲
+- **VoIP**: 語音通訊
+- **即時通訊**: 聊天應用
+- **感測器網路**: 資料收集
+
 ## 應用層協議
 
 ### MQTT (Message Queuing Telemetry Transport)
@@ -1382,6 +1695,235 @@ WebSocket 連接建立
 - **遊戲**: 即時多人遊戲
 - **移動應用**: 網路切換優化
 
+### 網路服務協議
+
+#### DNS (Domain Name System)
+
+DNS 是網際網路的命名系統，將網域名稱轉換為 IP 地址。
+
+##### DNS 主要功能
+- **名稱解析**: 將網域名稱轉換為 IP 地址
+- **反向解析**: 將 IP 地址轉換為網域名稱
+- **負載均衡**: 分散流量到多個伺服器
+- **郵件路由**: 解析郵件伺服器地址
+
+##### DNS 記錄類型
+| 類型 | 描述 | 用途 |
+|------|------|------|
+| A | IPv4 地址記錄 | 主機名稱到 IPv4 地址 |
+| AAAA | IPv6 地址記錄 | 主機名稱到 IPv6 地址 |
+| CNAME | 別名記錄 | 網域名稱別名 |
+| MX | 郵件交換記錄 | 郵件伺服器地址 |
+| NS | 名稱伺服器記錄 | 授權名稱伺服器 |
+| PTR | 指標記錄 | IP 地址到主機名稱 |
+| SOA | 起始授權記錄 | 區域資訊 |
+| TXT | 文字記錄 | 任意文字資訊 |
+
+##### DNS 查詢過程
+```
+本地 DNS 快取
+    ↓
+遞迴 DNS 伺服器
+    ↓
+根 DNS 伺服器
+    ↓
+頂級域名伺服器
+    ↓
+權威 DNS 伺服器
+    ↓
+返回 IP 地址
+```
+
+##### DNS 安全
+- **DNSSEC**: DNS 安全擴展
+- **DNS over HTTPS (DoH)**: 透過 HTTPS 傳輸 DNS
+- **DNS over TLS (DoT)**: 透過 TLS 傳輸 DNS
+
+#### DHCP (Dynamic Host Configuration Protocol)
+
+DHCP 用於自動分配 IP 地址和網路配置參數。
+
+##### DHCP 主要功能
+- **IP 地址分配**: 自動分配 IP 地址
+- **網路配置**: 分配子網路遮罩、閘道、DNS
+- **租約管理**: 管理 IP 地址租約
+- **保留地址**: 為特定設備保留固定 IP
+
+##### DHCP 工作流程
+```
+1. DHCP Discover (廣播)
+    ↓
+2. DHCP Offer (伺服器回應)
+    ↓
+3. DHCP Request (客戶端請求)
+    ↓
+4. DHCP Ack (伺服器確認)
+```
+
+##### DHCP 選項
+| 選項 | 描述 | 用途 |
+|------|------|------|
+| 1 | 子網路遮罩 | 網路遮罩 |
+| 3 | 路由器 | 預設閘道 |
+| 6 | DNS 伺服器 | 域名解析 |
+| 51 | IP 地址租約時間 | 租約期限 |
+| 53 | DHCP 訊息類型 | 訊息類型 |
+| 82 | 中繼代理資訊 | 中繼代理 |
+
+##### DHCP 中繼
+```
+客戶端 → DHCP 中繼 → DHCP 伺服器
+    ↓
+DHCP 伺服器 → DHCP 中繼 → 客戶端
+```
+
+#### SNMP (Simple Network Management Protocol)
+
+SNMP 用於網路設備管理和監控。
+
+##### SNMP 主要功能
+- **設備監控**: 監控網路設備狀態
+- **配置管理**: 遠端配置設備
+- **效能監控**: 收集效能統計資料
+- **故障管理**: 檢測和報告故障
+
+##### SNMP 版本比較
+| 特性 | SNMPv1 | SNMPv2c | SNMPv3 |
+|------|--------|---------|--------|
+| 安全性 | 社群字串 | 社群字串 | 使用者認證 |
+| 加密 | 無 | 無 | 支援 |
+| 認證 | 無 | 無 | 支援 |
+| 隱私 | 無 | 無 | 支援 |
+
+##### SNMP 操作類型
+- **GET**: 讀取單一變數
+- **GETNEXT**: 讀取下一個變數
+- **GETBULK**: 批量讀取變數
+- **SET**: 設定變數值
+- **TRAP**: 主動通知事件
+- **INFORM**: 確認的通知
+
+##### MIB (Management Information Base)
+```
+iso (1)
+└── org (3)
+    └── dod (6)
+        └── internet (1)
+            ├── mgmt (2)
+            │   └── mib-2 (1)
+            │       ├── system (1)
+            │       ├── interfaces (2)
+            │       └── ip (4)
+            └── private (4)
+                └── enterprises (1)
+```
+
+### 物聯網協議
+
+#### LwM2M (Lightweight M2M)
+
+LwM2M 是專為物聯網設備設計的輕量級管理協議。
+
+##### LwM2M 特性
+- **輕量級**: 適合資源受限設備
+- **標準化**: OMA 標準協議
+- **安全**: 支援 DTLS 加密
+- **可擴展**: 支援自定義物件
+- **RESTful**: 基於 CoAP 的 REST 風格
+
+##### LwM2M 架構
+```
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│ LwM2M 客戶端    │  │ LwM2M 伺服器    │  │ LwM2M 啟動伺服器 │
+│ (設備)          │  │ (管理平台)      │  │ (引導)          │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+```
+
+##### LwM2M 物件模型
+| 物件 ID | 名稱 | 描述 |
+|---------|------|------|
+| 0 | 安全物件 | 安全配置 |
+| 1 | 伺服器物件 | 伺服器配置 |
+| 2 | 存取控制物件 | 存取權限 |
+| 3 | 設備物件 | 設備資訊 |
+| 4 | 連接監控物件 | 連接狀態 |
+| 5 | 韌體更新物件 | 韌體管理 |
+
+##### LwM2M 操作
+- **註冊**: 設備向伺服器註冊
+- **更新**: 更新註冊資訊
+- **去註冊**: 取消註冊
+- **讀取**: 讀取資源值
+- **寫入**: 設定資源值
+- **執行**: 執行資源操作
+- **觀察**: 監控資源變化
+
+##### LwM2M 安全
+- **PSK**: 預共享金鑰
+- **RPK**: 原始公鑰
+- **X.509**: 憑證認證
+- **NoSec**: 無安全模式
+
+### 新興傳輸協議
+
+#### MASQUE (Multiplexed Application Substrate over QUIC Encryption)
+
+MASQUE 是基於 QUIC 的多路復用應用層協議，用於代理和隧道服務。
+
+##### MASQUE 特性
+- **多路復用**: 單一連接支援多個資料流
+- **代理支援**: 支援 HTTP 代理
+- **隧道支援**: 支援 IP 隧道
+- **QUIC 基礎**: 基於 QUIC 協議
+- **加密傳輸**: 內建加密保護
+
+##### MASQUE 架構
+```
+客戶端 → MASQUE 代理 → 目標伺服器
+    ↓
+MASQUE 隧道 → 目標網路
+```
+
+##### MASQUE 應用場景
+- **企業網路**: 安全遠端存取
+- **內容分發**: CDN 優化
+- **隱私保護**: 匿名化服務
+- **網路繞過**: 地理限制繞過
+
+#### WebTransport
+
+WebTransport 是基於 HTTP/3 的雙向傳輸協議，提供低延遲的雙向通訊。
+
+##### WebTransport 特性
+- **雙向通訊**: 同時支援雙向資料傳輸
+- **多路復用**: 單一連接多個資料流
+- **可靠傳輸**: 支援可靠和不可靠傳輸
+- **瀏覽器支援**: 原生瀏覽器 API
+- **HTTP/3 基礎**: 基於 HTTP/3 協議
+
+##### WebTransport API
+```javascript
+// 建立 WebTransport 連接
+const transport = new WebTransport('https://example.com:4433/');
+
+// 建立雙向串流
+const stream = await transport.createBidirectionalStream();
+
+// 發送資料
+const writer = stream.writable.getWriter();
+await writer.write(new Uint8Array([1, 2, 3, 4]));
+
+// 接收資料
+const reader = stream.readable.getReader();
+const {value, done} = await reader.read();
+```
+
+##### WebTransport 應用場景
+- **即時遊戲**: 低延遲遊戲通訊
+- **視訊會議**: 即時視訊通訊
+- **協作工具**: 即時協作應用
+- **IoT 通訊**: 設備即時通訊
+
 ## 安全協議
 
 ### TLS (Transport Layer Security)
@@ -1448,6 +1990,207 @@ TLS_AES_256_GCM_SHA384
 - **EV (Extended Validation)**: 擴展驗證
 - **Wildcard**: 萬用字元憑證
 - **SAN (Subject Alternative Name)**: 多網域憑證
+
+### 網路層安全協議
+
+#### IPSec (Internet Protocol Security)
+
+IPSec 是網路層的安全協議，提供 IP 封包的認證和加密。
+
+##### IPSec 主要功能
+- **認證**: 確保封包來源的真實性
+- **加密**: 保護封包內容的機密性
+- **完整性**: 防止封包被篡改
+- **重放保護**: 防止重放攻擊
+
+##### IPSec 模式
+- **傳輸模式**: 保護上層協議資料
+- **隧道模式**: 保護整個 IP 封包
+
+##### IPSec 協議
+- **AH (Authentication Header)**: 認證協議
+- **ESP (Encapsulating Security Payload)**: 加密協議
+
+##### IPSec 封包結構
+```
+傳輸模式:
+┌─────────────────────────────────────────────────────────────┐
+│ IP 標頭 │ AH/ESP │ TCP/UDP │ 資料                          │
+└─────────────────────────────────────────────────────────────┘
+
+隧道模式:
+┌─────────────────────────────────────────────────────────────┐
+│ 新 IP 標頭 │ AH/ESP │ 原始 IP 封包                         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+##### IPSec 安全關聯 (SA)
+- **IKE (Internet Key Exchange)**: 金鑰交換協議
+- **ISAKMP**: 安全關聯管理協議
+- **預共享金鑰**: 手動配置金鑰
+- **數位憑證**: 基於 PKI 的認證
+
+### VPN 協議
+
+#### OpenVPN
+
+OpenVPN 是開源的 VPN 解決方案，支援多種加密算法和認證方式。
+
+##### OpenVPN 特性
+- **跨平台**: 支援多種作業系統
+- **高安全性**: 支援多種加密算法
+- **靈活配置**: 支援多種網路拓撲
+- **開源**: 程式碼公開，可審計
+
+##### OpenVPN 模式
+- **TUN 模式**: 點對點模式，傳輸 IP 封包
+- **TAP 模式**: 橋接模式，傳輸乙太網幀
+
+##### OpenVPN 配置範例
+```bash
+# 伺服器配置
+port 1194
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh2048.pem
+server 10.8.0.0 255.255.255.0
+push "redirect-gateway def1"
+push "dhcp-option DNS 8.8.8.8"
+keepalive 10 120
+cipher AES-256-CBC
+auth SHA256
+comp-lzo
+user nobody
+group nobody
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+
+# 客戶端配置
+client
+dev tun
+proto udp
+remote server.example.com 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+ca ca.crt
+cert client.crt
+key client.key
+cipher AES-256-CBC
+auth SHA256
+comp-lzo
+verb 3
+```
+
+##### OpenVPN 安全特性
+- **TLS/SSL**: 傳輸層安全
+- **X.509 憑證**: 身份認證
+- **預共享金鑰**: 額外安全層
+- **HMAC**: 完整性保護
+
+### 進階加密技術
+
+#### 後量子密碼學 (Post-Quantum Cryptography)
+
+後量子密碼學是設計用來抵抗量子計算機攻擊的加密算法。
+
+##### 後量子密碼學類型
+- **格基密碼學 (Lattice-based)**: 基於格問題
+- **多變數密碼學 (Multivariate)**: 基於多變數方程組
+- **雜湊密碼學 (Hash-based)**: 基於雜湊函數
+- **編碼密碼學 (Code-based)**: 基於錯誤修正碼
+- **同構密碼學 (Isogeny-based)**: 基於橢圓曲線同構
+
+##### 後量子密碼學應用
+- **金鑰交換**: 抗量子金鑰交換協議
+- **數位簽名**: 抗量子數位簽名
+- **公鑰加密**: 抗量子公鑰加密
+- **混合加密**: 結合傳統和後量子算法
+
+##### NIST 後量子密碼學標準
+- **CRYSTALS-Kyber**: 金鑰封裝機制
+- **CRYSTALS-Dilithium**: 數位簽名
+- **Falcon**: 數位簽名
+- **SPHINCS+**: 雜湊簽名
+
+#### 零知識證明 (Zero-Knowledge Proofs)
+
+零知識證明允許證明者向驗證者證明某個陳述為真，而不洩露任何額外資訊。
+
+##### 零知識證明特性
+- **完整性**: 誠實證明者總能說服誠實驗證者
+- **可靠性**: 欺詐證明者無法說服誠實驗證者
+- **零知識性**: 驗證者無法獲得額外資訊
+
+##### 零知識證明類型
+- **互動式零知識證明**: 需要多輪互動
+- **非互動式零知識證明 (NIZK)**: 單輪證明
+- **zk-SNARK**: 簡潔非互動式知識證明
+- **zk-STARK**: 透明非互動式知識證明
+
+##### 零知識證明應用
+- **區塊鏈**: 隱私保護交易
+- **身份認證**: 匿名身份驗證
+- **投票系統**: 匿名投票
+- **供應鏈**: 隱私保護追蹤
+
+#### 同態加密 (Homomorphic Encryption)
+
+同態加密允許在加密資料上進行計算，而無需先解密。
+
+##### 同態加密類型
+- **部分同態加密**: 支援有限運算
+- **全同態加密**: 支援任意運算
+- **加法同態**: 支援加法運算
+- **乘法同態**: 支援乘法運算
+
+##### 同態加密應用
+- **雲端計算**: 保護隱私的雲端計算
+- **機器學習**: 保護隱私的機器學習
+- **醫療資料**: 保護隱私的醫療分析
+- **金融服務**: 保護隱私的金融計算
+
+##### 同態加密算法
+- **RSA**: 乘法同態
+- **ElGamal**: 乘法同態
+- **Paillier**: 加法同態
+- **BFV**: 全同態加密
+- **CKKS**: 近似全同態加密
+
+#### 區塊鏈安全協議
+
+區塊鏈安全協議是分散式帳本技術的安全機制。
+
+##### 區塊鏈安全特性
+- **去中心化**: 無單點故障
+- **不可篡改**: 歷史記錄不可更改
+- **透明性**: 所有交易公開可見
+- **共識機制**: 確保網路一致性
+
+##### 共識機制
+- **工作量證明 (PoW)**: 比特幣使用
+- **權益證明 (PoS)**: 以太坊 2.0 使用
+- **委託權益證明 (DPoS)**: EOS 使用
+- **實用拜占庭容錯 (PBFT)**: Hyperledger 使用
+
+##### 區塊鏈安全協議
+- **多重簽名**: 需要多個私鑰簽名
+- **時間鎖**: 延遲交易執行
+- **原子交換**: 跨鏈資產交換
+- **閃電網路**: 第二層擴展解決方案
+
+##### 區塊鏈應用
+- **加密貨幣**: 數位貨幣
+- **智能合約**: 自動執行的合約
+- **供應鏈**: 產品追蹤
+- **身份管理**: 去中心化身份
+- **投票系統**: 安全投票
 
 ## Quectel 模組實作範例
 
